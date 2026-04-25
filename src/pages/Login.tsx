@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { EnvelopeSimple, LockKey } from '@phosphor-icons/react'
 import { HiOutlineShieldCheck } from 'react-icons/hi2'
@@ -38,6 +39,14 @@ function Login() {
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#020617] px-4 py-10 font-sans">
+      <Link
+        to="/"
+        className="absolute left-5 top-5 z-20 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:border-primary/40 hover:text-primary"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Volver
+      </Link>
+
       {/* Dynamic Background Elements */}
       <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/20 blur-[120px] rounded-full animate-pulse" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 blur-[150px] rounded-full" />
