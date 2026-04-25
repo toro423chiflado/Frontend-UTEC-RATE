@@ -2,6 +2,8 @@ import {
   LogOut,
   ChevronRight
 } from 'lucide-react'
+import type { ComponentType } from 'react'
+import type { IconProps } from '@phosphor-icons/react'
 import { 
   SquaresFour, 
   Books, 
@@ -14,7 +16,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
 interface MenuItem {
-  icon: any
+  icon: ComponentType<IconProps>
   label: string
   path: string
 }

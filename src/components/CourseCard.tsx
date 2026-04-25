@@ -28,7 +28,9 @@ function CourseCard({ course }: CourseCardProps) {
             <h3 className="text-xl font-bold text-white font-display leading-tight group-hover:text-primary transition-colors">
               {course.name}
             </h3>
-            <p className="text-xs font-bold text-secondary/50 uppercase tracking-widest mt-0.5">CUR-2025</p>
+            <p className="text-xs font-bold text-secondary/50 uppercase tracking-widest mt-0.5">
+              {course.code}
+            </p>
           </div>
         </div>
 
@@ -49,7 +51,7 @@ function CourseCard({ course }: CourseCardProps) {
             
             <div className="text-right">
               <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/50">Reseñas</p>
-              <p className="text-sm font-bold text-white">42</p>
+              <p className="text-sm font-bold text-white">{course.reviewsCount}</p>
             </div>
           </div>
         </div>

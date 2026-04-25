@@ -1,12 +1,23 @@
+import { useMemo, useState } from 'react'
+import { Calendar, MessageSquare } from 'lucide-react'
+import Pagination from './Pagination'
 import type { Review } from '../types/review'
 import StarRating from './StarRating'
-import { MessageSquare, Calendar } from 'lucide-react'
 
 interface ReviewsListProps {
   reviews: Review[]
 }
 
 function ReviewsList({ reviews }: ReviewsListProps) {
+  const [page, setPage] = useState(1)
+  const itemsPerPage = 4
+  const totalPages = Math.max(1, Math.ceil(reviews.length / itemsPerPage))
+  const safePage = Math.min(page, totalPages)
+  const pagedReviews = useMemo(() => {
+    const start = (safePage - 1) * itemsPerPage
+    return reviews.slice(start, start + itemsPerPage)
+  }, [reviews, safePage])
+
   return (
     <section className="glass-panel rounded-[2rem] p-6 border border-white/5 shadow-2xl h-full">
       <div className="flex items-center justify-between mb-8">
@@ -16,9 +27,9 @@ function ReviewsList({ reviews }: ReviewsListProps) {
           </div>
           <div>
             <h2 className="text-xl font-bold text-white font-display">Opiniones</h2>
-            <p className="text-xs font-medium text-secondary">{reviews.length} testimonios</p>
-          </div>
+          <p className="text-xs font-medium text-secondary">{reviews.length} testimonios</p>
         </div>
+      </div>
       </div>
 
       {reviews.length === 0 ? (
@@ -32,8 +43,8 @@ function ReviewsList({ reviews }: ReviewsListProps) {
           </p>
         </div>
       ) : (
-        <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-          {reviews.map((review, i) => (
+        <div className="space-y-4">
+          {pagedReviews.map((review, i) => (
             <article
               key={review.id}
               style={{ animationDelay: `${i * 100}ms` }}
@@ -61,7 +72,6 @@ function ReviewsList({ reviews }: ReviewsListProps) {
                 <p className="text-sm text-secondary leading-relaxed font-medium">
                   "{review.comment}"
                 </p>
-                {/* Subtle quote icon decoration */}
                 <div className="absolute -top-2 -left-2 opacity-[0.03] text-white">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C14.9124 8 14.017 7.10457 14.017 6V3H21.017V21H14.017ZM3.01709 21L3.01709 18C3.01709 16.8954 3.91252 16 5.01709 16H8.01709C8.56937 16 9.01709 15.5523 9.01709 15V9C9.01709 8.44772 8.56937 8 8.01709 8H5.01709C3.91252 8 3.01709 7.10457 3.01709 6V3H10.017V21H3.01709Z" />
@@ -72,6 +82,13 @@ function ReviewsList({ reviews }: ReviewsListProps) {
           ))}
         </div>
       )}
+
+      <Pagination
+        currentPage={safePage}
+        onPageChange={setPage}
+        totalItems={reviews.length}
+        totalPages={totalPages}
+      />
     </section>
   )
 }

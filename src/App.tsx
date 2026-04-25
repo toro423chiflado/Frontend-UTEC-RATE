@@ -5,6 +5,7 @@ import Courses from './pages/Courses'
 import CourseDetail from './pages/CourseDetail'
 import Dashboard from './pages/Dashboard'
 import Insights from './pages/Insights'
+import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import Reviews from './pages/Reviews'
@@ -12,7 +13,7 @@ import Reviews from './pages/Reviews'
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
 
       <Route element={<ProtectedRoute />}>
@@ -26,7 +27,7 @@ function App() {
         </Route>
       </Route>
 
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }

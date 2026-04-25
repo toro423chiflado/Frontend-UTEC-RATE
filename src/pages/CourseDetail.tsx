@@ -4,9 +4,12 @@ import AIInsights from '../components/AIInsights'
 import AddReviewForm from '../components/AddReviewForm'
 import ReviewsList from '../components/ReviewsList'
 import StarRating from '../components/StarRating'
+import Pagination from '../components/Pagination'
 import { courseService } from '../services/courseService'
 import { reviewService } from '../services/reviewService'
+import { studentService } from '../services/studentService'
 import type { NewReview, Review } from '../types/review'
+import type { Student } from '../types/student'
 import { ArrowLeft, BookOpen, MessageCircle, Sparkles, User } from 'lucide-react'
 
 const calculateAverageRating = (reviews: Review[]) => {
@@ -26,17 +29,29 @@ function CourseDetail() {
     : courseService.getCourseById(parsedId)
 
   const [reviews, setReviews] = useState<Review[]>([])
+  const [students, setStudents] = useState<Student[]>([])
+  const [studentPage, setStudentPage] = useState(1)
 
   useEffect(() => {
     if (!course) {
       setReviews([])
+      setStudents([])
       return
     }
 
     setReviews(reviewService.getReviewsByCourseId(course.id))
+    setStudents(studentService.getStudentsByCourseId(course.id))
+    setStudentPage(1)
   }, [course])
 
   const averageRating = useMemo(() => calculateAverageRating(reviews), [reviews])
+  const studentsPerPage = 4
+  const totalStudentPages = Math.max(1, Math.ceil(students.length / studentsPerPage))
+  const safeStudentPage = Math.min(studentPage, totalStudentPages)
+  const pagedStudents = useMemo(() => {
+    const start = (safeStudentPage - 1) * studentsPerPage
+    return students.slice(start, start + studentsPerPage)
+  }, [safeStudentPage, students])
 
   const handleAddReview = (reviewData: NewReview) => {
     setReviews((previousReviews) => {
@@ -142,6 +157,37 @@ function CourseDetail() {
           <ReviewsList reviews={reviews} />
         </div>
       </div>
+
+      <section className="glass-panel rounded-[2rem] border border-white/5 p-6">
+        <h2 className="text-xl font-bold text-white font-display">Alumnos inscritos</h2>
+        <p className="mt-1 text-sm text-secondary">
+          Lista simulada de estudiantes registrados en este curso.
+        </p>
+
+        <div className="mt-4 space-y-3">
+          {pagedStudents.map((student) => (
+            <article
+              key={student.id}
+              className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
+            >
+              <div>
+                <p className="font-semibold text-white">{student.name}</p>
+                <p className="text-xs text-secondary">Carrera: {student.major}</p>
+              </div>
+              <span className="text-xs font-semibold uppercase tracking-widest text-secondary/70">
+                Sem {student.semester}
+              </span>
+            </article>
+          ))}
+        </div>
+
+        <Pagination
+          currentPage={safeStudentPage}
+          onPageChange={setStudentPage}
+          totalItems={students.length}
+          totalPages={totalStudentPages}
+        />
+      </section>
     </div>
   )
 }
