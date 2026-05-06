@@ -25,9 +25,15 @@ export const useAuth = () => {
   )
 
   const token = authService.getToken()
+  const user = authService.getUser()
 
   return {
     isAuthenticated: Boolean(token),
+    user,
+    role: user?.role,
+    isAdmin: user?.role === 'ADMIN',
+    isStudent: user?.role === 'STUDENT',
+    isProfessor: user?.role === 'PROFESSOR',
     login,
     loginWithGoogle,
     logout,

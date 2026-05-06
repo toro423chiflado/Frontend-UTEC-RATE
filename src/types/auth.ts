@@ -9,6 +9,17 @@ export interface RegisterCredentials {
   password: string
 }
 
+export type Role = 'ADMIN' | 'STUDENT' | 'PROFESSOR'
+
+export interface User {
+  id: number
+  email: string
+  name: string
+  role: Role
+  photo?: string
+}
+
 export interface AuthResponse {
   token: string
+  user: User
 }

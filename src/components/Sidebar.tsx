@@ -15,23 +15,39 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import ThemeToggle from './ThemeToggle'
 
-interface MenuItem {
-  icon: ComponentType<IconProps>
-  label: string
-  path: string
-}
-
-const menuItems: MenuItem[] = [
-  { icon: SquaresFour, label: 'Carreras', path: '/careers' },
-  { icon: ChatTeardropDots, label: 'Mis Reviews', path: '/reviews' },
-  { icon: Lightning, label: 'Insights AI', path: '/insights' },
-  { icon: UserCircle, label: 'Perfil', path: '/profile' },
-]
-
 function Sidebar() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { logout, isAdmin, isStudent, isProfessor } = useAuth()
+
+  const getMenuItems = () => {
+    if (isAdmin) {
+      return [
+        { icon: SquaresFour, label: 'Carreras', path: '/admin/careers' },
+        { icon: SquaresFour, label: 'Cursos', path: '/admin/courses' },
+        { icon: UserCircle, label: 'Usuarios', path: '/admin/users' },
+        { icon: ChatTeardropDots, label: 'Moderación', path: '/admin/reviews' },
+        { icon: UserCircle, label: 'Perfil', path: '/profile' },
+      ]
+    }
+    
+    if (isProfessor) {
+      return [
+        { icon: SquaresFour, label: 'Mis Cursos', path: '/professor/courses' },
+        { icon: UserCircle, label: 'Perfil', path: '/profile' },
+      ]
+    }
+
+    // Default to student
+    return [
+      { icon: SquaresFour, label: 'Carreras', path: '/careers' },
+      { icon: ChatTeardropDots, label: 'Mis Reviews', path: '/reviews' },
+      { icon: Lightning, label: 'Insights AI', path: '/insights' },
+      { icon: UserCircle, label: 'Perfil', path: '/profile' },
+    ]
+  }
+
+  const menuItems = getMenuItems()
 
   const handleLogout = () => {
     logout()
