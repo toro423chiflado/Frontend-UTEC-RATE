@@ -1,3 +1,4 @@
+import api from './api'
 import type {
   AuthResponse,
   LoginCredentials,
@@ -7,60 +8,43 @@ import type {
 
 const TOKEN_KEY = 'token'
 const USER_KEY = 'user'
-const FAKE_JWT_TOKEN = 'fake-jwt-token'
-
-const wait = (delayMs: number) =>
-  new Promise<void>((resolve) => {
-    setTimeout(resolve, delayMs)
-  })
-
-const MOCK_USERS: Record<string, User> = {
-  'admin@urate.com': { id: 1, email: 'admin@urate.com', name: 'Administrador', role: 'ADMIN' },
-  'student@urate.com': { id: 2, email: 'student@urate.com', name: 'Estudiante', role: 'STUDENT' },
-  'professor@urate.com': { id: 3, email: 'professor@urate.com', name: 'Profesor', role: 'PROFESSOR' },
-}
 
 const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
-  await wait(400)
+  try {
+    const response = await api.post<AuthResponse>('/auth/login', credentials)
+    const { token, user } = response.data
 
-  const user = MOCK_USERS[credentials.email]
-
-  if (user && credentials.password === '123456') {
-    localStorage.setItem(TOKEN_KEY, FAKE_JWT_TOKEN)
+    localStorage.setItem(TOKEN_KEY, token)
     localStorage.setItem(USER_KEY, JSON.stringify(user))
-    return { token: FAKE_JWT_TOKEN, user }
-  }
 
-  throw new Error('Credenciales incorrectas')
+    return response.data
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Credenciales incorrectas')
+  }
 }
 
 const loginWithGoogle = async (): Promise<AuthResponse> => {
-  await wait(400)
-  const user = MOCK_USERS['student@urate.com']
-  localStorage.setItem(TOKEN_KEY, FAKE_JWT_TOKEN)
-  localStorage.setItem(USER_KEY, JSON.stringify(user))
-  return { token: FAKE_JWT_TOKEN, user }
+  // Placeholder for Google Login API logic
+  throw new Error('No implementado aún en el backend')
 }
 
 const register = async (credentials: RegisterCredentials): Promise<AuthResponse> => {
-  await wait(500)
+  try {
+    const response = await api.post<AuthResponse>('/auth/register', credentials)
+    const { token, user } = response.data
 
-  if (!credentials.fullName.trim()) {
-    throw new Error('Ingresa tu nombre completo')
+    localStorage.setItem(TOKEN_KEY, token)
+    localStorage.setItem(USER_KEY, JSON.stringify(user))
+
+    return response.data
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Error al registrar')
   }
-
-  const user: User = { id: Date.now(), email: credentials.email, name: credentials.fullName, role: 'STUDENT' }
-  localStorage.setItem(TOKEN_KEY, FAKE_JWT_TOKEN)
-  localStorage.setItem(USER_KEY, JSON.stringify(user))
-  return { token: FAKE_JWT_TOKEN, user }
 }
 
 const registerWithGoogle = async (): Promise<AuthResponse> => {
-  await wait(400)
-  const user = MOCK_USERS['student@urate.com']
-  localStorage.setItem(TOKEN_KEY, FAKE_JWT_TOKEN)
-  localStorage.setItem(USER_KEY, JSON.stringify(user))
-  return { token: FAKE_JWT_TOKEN, user }
+  // Placeholder for Google Register API logic
+  throw new Error('No implementado aún en el backend')
 }
 
 const logout = () => {
