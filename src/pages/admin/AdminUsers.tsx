@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { UserCircle, Trash, PencilSimple, Plus } from '@phosphor-icons/react'
+import { User, Trash2, Pencil, Plus } from 'lucide-react'
 import { usuariosService, type Usuario, type BackendRol, type CreateUsuarioPayload } from '../../services/usuariosService'
 
 const ROL_LABELS: Record<BackendRol, string> = {
@@ -9,9 +9,9 @@ const ROL_LABELS: Record<BackendRol, string> = {
 }
 
 const ROL_COLORS: Record<BackendRol, string> = {
-  ADMIN: 'border-red-500/30 text-red-400',
-  PROFESOR: 'border-blue-500/30 text-blue-400',
-  ESTUDIANTE: 'border-green-500/30 text-green-400',
+  ADMIN: 'bg-red-500/15 border-red-500/30 text-red-400',
+  PROFESOR: 'bg-blue-500/15 border-blue-500/30 text-blue-400',
+  ESTUDIANTE: 'bg-green-500/15 border-green-500/30 text-green-400',
 }
 
 const ROLES: BackendRol[] = ['ADMIN', 'PROFESOR', 'ESTUDIANTE']
@@ -108,7 +108,7 @@ export default function AdminUsers() {
             onClick={openCreate}
             className="flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white hover:bg-primary-hover transition-all shadow-lg shadow-primary/20"
           >
-            <Plus size={18} weight="bold" />
+            <Plus size={18} />
             Nuevo Usuario
           </button>
         </div>
@@ -120,78 +120,91 @@ export default function AdminUsers() {
         </div>
       )}
 
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        </div>
-      ) : (
-        <div className="overflow-hidden rounded-2xl border border-card-border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-card-border bg-foreground/5">
-                {['Usuario', 'Correo', 'Rol', 'Acciones'].map((h, i) => (
-                  <th key={h} className={`px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-secondary ${i === 3 ? 'text-right' : 'text-left'}`}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {usuarios.map((u) => (
-                <tr key={u.id} className="border-b border-card-border/50 hover:bg-foreground/5 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                        <UserCircle size={20} className="text-primary" />
-                      </div>
-                      <span className="font-semibold text-foreground">{u.nombre} {u.apellido}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-secondary">{u.correo}</td>
-                  <td className="px-6 py-4">
-                    <select
-                      value={u.rol}
-                      onChange={(e) => handleChangeRol(u, e.target.value as BackendRol)}
-                      className={`rounded-lg border bg-transparent px-3 py-1 text-xs font-bold cursor-pointer outline-none ${ROL_COLORS[u.rol]}`}
-                    >
-                      {ROLES.map((r) => (
-                        <option key={r} value={r} className="bg-background text-foreground font-normal">
-                          {ROL_LABELS[r]}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => openEdit(u)}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-card-border bg-foreground/5 text-secondary hover:border-primary/30 hover:text-primary transition-all"
-                        title="Editar"
-                      >
-                        <PencilSimple size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(u.id)}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-card-border bg-foreground/5 text-secondary hover:border-red-500/30 hover:text-red-400 transition-all"
-                        title="Eliminar"
-                      >
-                        <Trash size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+      <div className="overflow-hidden rounded-2xl border border-card-border">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-card-border bg-foreground/5">
+              {['Usuario', 'Correo', 'Rol', 'Acciones'].map((h, i) => (
+                <th key={h} className={`px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-secondary ${i === 3 ? 'text-right' : 'text-left'}`}>
+                  {h}
+                </th>
               ))}
-              {!loading && usuarios.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-16 text-center text-secondary">
-                    No hay usuarios registrados.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </tr>
+          </thead>
+          <tbody>
+            {loading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i} className="border-b border-card-border/50">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-full bg-foreground/10 animate-pulse" />
+                        <div className="h-4 w-32 rounded bg-foreground/10 animate-pulse" />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4"><div className="h-4 w-44 rounded bg-foreground/10 animate-pulse" /></td>
+                    <td className="px-6 py-4"><div className="h-6 w-20 rounded-lg bg-foreground/10 animate-pulse" /></td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <div className="h-8 w-8 rounded-lg bg-foreground/10 animate-pulse" />
+                        <div className="h-8 w-8 rounded-lg bg-foreground/10 animate-pulse" />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              : usuarios.map((u) => (
+                  <tr key={u.id} className="border-b border-card-border/50 hover:bg-foreground/5 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                          <User size={18} className="text-primary" />
+                        </div>
+                        <span className="font-semibold text-foreground">{u.nombre} {u.apellido}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-secondary">{u.correo}</td>
+                    <td className="px-6 py-4">
+                      <select
+                        value={u.rol}
+                        onChange={(e) => handleChangeRol(u, e.target.value as BackendRol)}
+                        className={`rounded-lg border px-3 py-1 text-xs font-bold cursor-pointer outline-none ${ROL_COLORS[u.rol]}`}
+                      >
+                        {ROLES.map((r) => (
+                          <option key={r} value={r} className="bg-background text-foreground font-normal">
+                            {ROL_LABELS[r]}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => openEdit(u)}
+                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-card-border bg-foreground/5 text-secondary hover:border-primary/30 hover:text-primary transition-all"
+                          title="Editar"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(u.id)}
+                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-card-border bg-foreground/5 text-secondary hover:border-red-500/30 hover:text-red-400 transition-all"
+                          title="Eliminar"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            {!loading && usuarios.length === 0 && (
+              <tr>
+                <td colSpan={4} className="px-6 py-16 text-center text-secondary">
+                  No hay usuarios registrados.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">

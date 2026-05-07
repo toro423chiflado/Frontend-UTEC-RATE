@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { BookOpen, ArrowRight } from '@phosphor-icons/react'
+import { BookOpen, ArrowRight } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { profesorCursoService, type CursoAsignado } from '../../services/profesorCursoService'
 
@@ -43,51 +43,59 @@ export default function ProfessorCourses() {
         </div>
       )}
 
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {cursos.map((c) => (
-            <Link
-              key={c.profesorCursoId}
-              to={`/courses/${c.cursoId}/repository`}
-              className="glass-card group flex flex-col justify-between rounded-2xl border border-card-border overflow-hidden hover:border-primary/30 transition-all"
-            >
-              <div className="h-1.5 w-full" style={{ backgroundColor: c.colorHex }} />
-              <div className="flex flex-col flex-1 p-5">
-                <div className="mb-auto">
-                  <div
-                    className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg transition-all group-hover:scale-105"
-                    style={{ backgroundColor: `${c.colorHex}20`, color: c.colorHex }}
-                  >
-                    <BookOpen size={20} weight="duotone" />
-                  </div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/50">{c.codigo}</p>
-                  <h2 className="mt-1 text-base font-bold text-foreground font-display line-clamp-2">{c.nombre}</h2>
-                  <p className="mt-1 text-[11px] text-secondary/60">{c.creditos} créditos</p>
-                </div>
-                <div className="mt-4 flex items-center justify-between border-t border-card-border pt-4">
-                  <div className="space-y-0.5">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-secondary/50">
-                      {c.semestre} · Sección {c.seccion}
-                    </p>
-                  </div>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground/5 text-foreground/40 group-hover:bg-primary/20 group-hover:text-primary transition-all">
-                    <ArrowRight size={14} />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {loading
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="rounded-2xl border border-card-border overflow-hidden">
+                <div className="h-1.5 w-full bg-foreground/10 animate-pulse" />
+                <div className="p-5 space-y-3">
+                  <div className="h-10 w-10 rounded-lg bg-foreground/10 animate-pulse" />
+                  <div className="h-3 w-16 rounded bg-foreground/10 animate-pulse" />
+                  <div className="h-5 w-36 rounded bg-foreground/10 animate-pulse" />
+                  <div className="h-3 w-20 rounded bg-foreground/10 animate-pulse" />
+                  <div className="border-t border-card-border pt-4 flex items-center justify-between">
+                    <div className="h-3 w-28 rounded bg-foreground/10 animate-pulse" />
+                    <div className="h-7 w-7 rounded-full bg-foreground/10 animate-pulse" />
                   </div>
                 </div>
               </div>
-            </Link>
-          ))}
-          {!loading && cursos.length === 0 && (
-            <p className="col-span-full py-16 text-center text-secondary">
-              No tienes cursos asignados este semestre.
-            </p>
-          )}
-        </div>
-      )}
+            ))
+          : cursos.map((c) => (
+              <Link
+                key={c.profesorCursoId}
+                to={`/courses/${c.cursoId}/repository`}
+                className="glass-card group flex flex-col justify-between rounded-2xl border border-card-border overflow-hidden hover:border-primary/30 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <div className="h-1.5 w-full" style={{ backgroundColor: c.colorHex }} />
+                <div className="flex flex-col flex-1 p-5">
+                  <div className="mb-auto">
+                    <div
+                      className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg group-hover:scale-105 transition-transform"
+                      style={{ backgroundColor: `${c.colorHex}20`, color: c.colorHex }}
+                    >
+                      <BookOpen size={20} />
+                    </div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/50">{c.codigo}</p>
+                    <h2 className="mt-1 text-base font-bold text-foreground font-display line-clamp-2">{c.nombre}</h2>
+                    <p className="mt-1 text-[11px] text-secondary/60">{c.creditos} créditos</p>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between border-t border-card-border pt-4">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-secondary/50">
+                      {c.semestre} · Sec. {c.seccion}
+                    </p>
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground/5 text-foreground/40 group-hover:bg-primary/20 group-hover:text-primary transition-all">
+                      <ArrowRight size={14} />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+        {!loading && cursos.length === 0 && (
+          <p className="col-span-full py-16 text-center text-secondary">
+            No tienes cursos asignados este semestre.
+          </p>
+        )}
+      </div>
     </div>
   )
 }

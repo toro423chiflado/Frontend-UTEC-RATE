@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { GraduationCap, Trash, PencilSimple, Plus } from '@phosphor-icons/react'
+import { GraduationCap, Trash2, Pencil, Plus } from 'lucide-react'
 import { carrerasService, type Carrera, type CarreraPayload } from '../../services/carrerasService'
 
 const emptyForm: CarreraPayload = { nombre: '', codigo: '', activa: true }
@@ -83,7 +83,7 @@ export default function AdminCareers() {
             onClick={openCreate}
             className="flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white hover:bg-primary-hover transition-all shadow-lg shadow-primary/20"
           >
-            <Plus size={18} weight="bold" />
+            <Plus size={18} />
             Nueva Carrera
           </button>
         </div>
@@ -95,48 +95,57 @@ export default function AdminCareers() {
         </div>
       )}
 
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {carreras.map((c) => (
-            <div key={c.id} className="glass-card flex flex-col justify-between rounded-2xl border border-card-border p-5">
-              <div>
-                <div className="mb-4 flex items-start justify-between">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <GraduationCap size={20} weight="duotone" />
-                  </div>
-                  <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${c.activa ? 'border-green-500/30 text-green-400' : 'border-red-500/30 text-red-400'}`}>
-                    {c.activa ? 'Activa' : 'Inactiva'}
-                  </span>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {loading
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="rounded-2xl border border-card-border p-5 space-y-3">
+                <div className="flex items-start justify-between">
+                  <div className="h-10 w-10 rounded-lg bg-foreground/10 animate-pulse" />
+                  <div className="h-5 w-16 rounded-full bg-foreground/10 animate-pulse" />
                 </div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/50">{c.codigo}</p>
-                <h2 className="mt-1 text-base font-bold text-foreground font-display line-clamp-2">{c.nombre}</h2>
+                <div className="h-3 w-16 rounded bg-foreground/10 animate-pulse" />
+                <div className="h-5 w-40 rounded bg-foreground/10 animate-pulse" />
+                <div className="border-t border-card-border pt-4 flex gap-2">
+                  <div className="h-8 flex-1 rounded-lg bg-foreground/10 animate-pulse" />
+                  <div className="h-8 w-8 rounded-lg bg-foreground/10 animate-pulse" />
+                </div>
               </div>
-              <div className="mt-4 flex items-center gap-2 border-t border-card-border pt-4">
-                <button
-                  onClick={() => openEdit(c)}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-card-border bg-foreground/5 py-2 text-xs font-semibold text-secondary hover:border-primary/30 hover:text-primary transition-all"
-                >
-                  <PencilSimple size={14} /> Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(c.id)}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-card-border bg-foreground/5 text-secondary hover:border-red-500/30 hover:text-red-400 transition-all"
-                  title="Eliminar"
-                >
-                  <Trash size={14} />
-                </button>
+            ))
+          : carreras.map((c) => (
+              <div key={c.id} className="glass-card group flex flex-col justify-between rounded-2xl border border-card-border p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                <div>
+                  <div className="mb-4 flex items-start justify-between">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
+                      <GraduationCap size={20} />
+                    </div>
+                    <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${c.activa ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
+                      {c.activa ? 'Activa' : 'Inactiva'}
+                    </span>
+                  </div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/50">{c.codigo}</p>
+                  <h2 className="mt-1 text-base font-bold text-foreground font-display line-clamp-2">{c.nombre}</h2>
+                </div>
+                <div className="mt-4 flex items-center gap-2 border-t border-card-border pt-4">
+                  <button
+                    onClick={() => openEdit(c)}
+                    className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-card-border bg-foreground/5 py-2 text-xs font-semibold text-secondary hover:border-primary/30 hover:text-primary transition-all"
+                  >
+                    <Pencil size={13} /> Editar
+                  </button>
+                  <button
+                    onClick={() => handleDelete(c.id)}
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-card-border bg-foreground/5 text-secondary hover:border-red-500/30 hover:text-red-400 transition-all"
+                    title="Eliminar"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-          {carreras.length === 0 && (
-            <p className="col-span-full py-16 text-center text-secondary">No hay carreras registradas.</p>
-          )}
-        </div>
-      )}
+            ))}
+        {!loading && carreras.length === 0 && (
+          <p className="col-span-full py-16 text-center text-secondary">No hay carreras registradas.</p>
+        )}
+      </div>
 
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">

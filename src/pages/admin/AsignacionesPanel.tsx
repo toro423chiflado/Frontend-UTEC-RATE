@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Trash, UserCircle } from '@phosphor-icons/react'
+import { Trash2, User } from 'lucide-react'
 import { cursosService, type Curso } from '../../services/cursosService'
 import { profesorCursoService, type ProfesorDeCurso } from '../../services/profesorCursoService'
 
@@ -97,60 +97,68 @@ export default function AsignacionesPanel() {
             </div>
           </div>
 
-          {loadingAsig ? (
-            <div className="flex justify-center py-16">
-              <div className="h-7 w-7 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            </div>
-          ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-card-border/50 bg-foreground/5">
-                  {['Profesor', 'Semestre', 'Sección', ''].map((h, i) => (
-                    <th
-                      key={i}
-                      className={`px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-secondary ${i === 3 ? 'text-right' : 'text-left'}`}
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {asignaciones.map((a) => (
-                  <tr key={a.profesorCursoId} className="border-b border-card-border/40 hover:bg-foreground/5 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                          <UserCircle size={18} className="text-primary" />
-                        </div>
-                        <span className="font-semibold text-foreground">
-                          {a.nombre} {a.apellido}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-secondary">{a.semestre}</td>
-                    <td className="px-6 py-4 text-secondary">{a.seccion}</td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => handleDesactivar(a.profesorCursoId)}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-card-border bg-foreground/5 text-secondary hover:border-red-500/30 hover:text-red-400 transition-all ml-auto"
-                        title="Desactivar asignación"
-                      >
-                        <Trash size={15} />
-                      </button>
-                    </td>
-                  </tr>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-card-border/50 bg-foreground/5">
+                {['Profesor', 'Semestre', 'Sección', ''].map((h, i) => (
+                  <th
+                    key={i}
+                    className={`px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-secondary ${i === 3 ? 'text-right' : 'text-left'}`}
+                  >
+                    {h}
+                  </th>
                 ))}
-                {!loadingAsig && asignaciones.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className="px-6 py-14 text-center text-secondary">
-                      Este curso no tiene profesores asignados.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          )}
+              </tr>
+            </thead>
+            <tbody>
+              {loadingAsig
+                ? Array.from({ length: 3 }).map((_, i) => (
+                    <tr key={i} className="border-b border-card-border/40">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-foreground/10 animate-pulse" />
+                          <div className="h-4 w-32 rounded bg-foreground/10 animate-pulse" />
+                        </div>
+                      </td>
+                      <td className="px-6 py-4"><div className="h-4 w-16 rounded bg-foreground/10 animate-pulse" /></td>
+                      <td className="px-6 py-4"><div className="h-4 w-8 rounded bg-foreground/10 animate-pulse" /></td>
+                      <td className="px-6 py-4 text-right"><div className="h-8 w-8 rounded-lg bg-foreground/10 animate-pulse ml-auto" /></td>
+                    </tr>
+                  ))
+                : asignaciones.map((a) => (
+                    <tr key={a.profesorCursoId} className="border-b border-card-border/40 hover:bg-foreground/5 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                            <User size={16} className="text-primary" />
+                          </div>
+                          <span className="font-semibold text-foreground">
+                            {a.nombre} {a.apellido}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-secondary">{a.semestre}</td>
+                      <td className="px-6 py-4 text-secondary">{a.seccion}</td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => handleDesactivar(a.profesorCursoId)}
+                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-card-border bg-foreground/5 text-secondary hover:border-red-500/30 hover:text-red-400 transition-all ml-auto"
+                          title="Desactivar asignación"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              {!loadingAsig && asignaciones.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-14 text-center text-secondary">
+                    Este curso no tiene profesores asignados.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

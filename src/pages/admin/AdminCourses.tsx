@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { BookOpen, Trash, PencilSimple, Plus, MagnifyingGlass, UserPlus } from '@phosphor-icons/react'
+import { BookOpen, Trash2, Pencil, Plus, Search, UserPlus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cursosService, type Curso, type CursoPayload } from '../../services/cursosService'
 import { carrerasService, type Carrera } from '../../services/carrerasService'
 import { profesorCursoService, type AsignarProfesorPayload, type Semestre } from '../../services/profesorCursoService'
@@ -162,7 +162,7 @@ export default function AdminCourses() {
             onClick={openCreate}
             className="flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white hover:bg-primary-hover transition-all shadow-lg shadow-primary/20"
           >
-            <Plus size={18} weight="bold" />
+            <Plus size={18} />
             Nuevo Curso
           </button>
         </div>
@@ -171,7 +171,7 @@ export default function AdminCourses() {
       {/* Búsqueda */}
       <form onSubmit={handleSearch} className="flex gap-3">
         <div className="relative flex-1">
-          <MagnifyingGlass size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary" />
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary" />
           <input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -199,93 +199,105 @@ export default function AdminCourses() {
         </div>
       )}
 
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {cursos.map((c) => (
-              <div
-                key={c.id}
-                className="glass-card flex flex-col justify-between rounded-2xl border border-card-border overflow-hidden"
-              >
-                {/* Color accent strip */}
-                <div className="h-1.5 w-full" style={{ backgroundColor: c.colorHex }} />
-                <div className="flex flex-col flex-1 p-5">
-                  <div className="mb-auto">
-                    <div className="flex items-start justify-between gap-2 mb-3">
-                      <div
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                        style={{ backgroundColor: `${c.colorHex}20`, color: c.colorHex }}
-                      >
-                        <BookOpen size={18} weight="duotone" />
-                      </div>
-                      <span className="text-[10px] font-bold text-secondary/50 mt-1">{c.creditos} cr.</span>
+      <>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="rounded-2xl border border-card-border overflow-hidden">
+                  <div className="h-1.5 w-full bg-foreground/10 animate-pulse" />
+                  <div className="p-5 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="h-9 w-9 rounded-lg bg-foreground/10 animate-pulse" />
+                      <div className="h-4 w-8 rounded bg-foreground/10 animate-pulse" />
                     </div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/50">{c.codigo}</p>
-                    <h2 className="mt-1 text-sm font-bold text-foreground font-display line-clamp-2">{c.nombre}</h2>
-                    <p className="mt-1 text-[11px] text-secondary/60 line-clamp-1">{carreraName(c.carreraId)}</p>
-                  </div>
-
-                  <div className="mt-4 flex items-center gap-1.5 border-t border-card-border pt-4">
-                    <button
-                      onClick={() => openEdit(c)}
-                      className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-card-border bg-foreground/5 py-2 text-[11px] font-semibold text-secondary hover:border-primary/30 hover:text-primary transition-all"
-                      title="Editar"
-                    >
-                      <PencilSimple size={13} /> Editar
-                    </button>
-                    <button
-                      onClick={() => openAssign(c)}
-                      className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-card-border bg-foreground/5 py-2 text-[11px] font-semibold text-secondary hover:border-primary/30 hover:text-primary transition-all"
-                      title="Asignar profesor"
-                    >
-                      <UserPlus size={13} /> Asignar
-                    </button>
-                    <button
-                      onClick={() => handleDelete(c.id)}
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-card-border bg-foreground/5 text-secondary hover:border-red-500/30 hover:text-red-400 transition-all"
-                      title="Eliminar"
-                    >
-                      <Trash size={13} />
-                    </button>
+                    <div className="h-3 w-20 rounded bg-foreground/10 animate-pulse" />
+                    <div className="h-4 w-36 rounded bg-foreground/10 animate-pulse" />
+                    <div className="h-3 w-24 rounded bg-foreground/10 animate-pulse" />
+                    <div className="border-t border-card-border pt-4 flex gap-1.5">
+                      <div className="h-8 flex-1 rounded-lg bg-foreground/10 animate-pulse" />
+                      <div className="h-8 flex-1 rounded-lg bg-foreground/10 animate-pulse" />
+                      <div className="h-8 w-8 rounded-lg bg-foreground/10 animate-pulse" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-            {cursos.length === 0 && (
-              <p className="col-span-full py-16 text-center text-secondary">
-                {searchQuery ? `Sin resultados para "${searchQuery}".` : 'No hay cursos registrados.'}
-              </p>
-            )}
-          </div>
+              ))
+            : cursos.map((c) => (
+                <div
+                  key={c.id}
+                  className="glass-card group flex flex-col justify-between rounded-2xl border border-card-border overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  <div className="h-1.5 w-full" style={{ backgroundColor: c.colorHex }} />
+                  <div className="flex flex-col flex-1 p-5">
+                    <div className="mb-auto">
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <div
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg group-hover:scale-105 transition-transform"
+                          style={{ backgroundColor: `${c.colorHex}20`, color: c.colorHex }}
+                        >
+                          <BookOpen size={17} />
+                        </div>
+                        <span className="text-[10px] font-bold text-secondary/50 mt-1">{c.creditos} cr.</span>
+                      </div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/50">{c.codigo}</p>
+                      <h2 className="mt-1 text-sm font-bold text-foreground font-display line-clamp-2">{c.nombre}</h2>
+                      <p className="mt-1 text-[11px] text-secondary/60 line-clamp-1">{carreraName(c.carreraId)}</p>
+                    </div>
 
-          {/* Paginación */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="rounded-lg border border-card-border bg-foreground/5 px-4 py-2 text-sm text-secondary hover:bg-foreground/10 disabled:opacity-40 transition-all"
-              >
-                Anterior
-              </button>
-              <span className="text-sm text-secondary">
-                Página {page} de {totalPages}
-              </span>
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="rounded-lg border border-card-border bg-foreground/5 px-4 py-2 text-sm text-secondary hover:bg-foreground/10 disabled:opacity-40 transition-all"
-              >
-                Siguiente
-              </button>
-            </div>
+                    <div className="mt-4 flex items-center gap-1.5 border-t border-card-border pt-4">
+                      <button
+                        onClick={() => openEdit(c)}
+                        className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-card-border bg-foreground/5 py-2 text-[11px] font-semibold text-secondary hover:border-primary/30 hover:text-primary transition-all"
+                        title="Editar"
+                      >
+                        <Pencil size={12} /> Editar
+                      </button>
+                      <button
+                        onClick={() => openAssign(c)}
+                        className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-card-border bg-foreground/5 py-2 text-[11px] font-semibold text-secondary hover:border-primary/30 hover:text-primary transition-all"
+                        title="Asignar profesor"
+                      >
+                        <UserPlus size={12} /> Asignar
+                      </button>
+                      <button
+                        onClick={() => handleDelete(c.id)}
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-card-border bg-foreground/5 text-secondary hover:border-red-500/30 hover:text-red-400 transition-all"
+                        title="Eliminar"
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          {!loading && cursos.length === 0 && (
+            <p className="col-span-full py-16 text-center text-secondary">
+              {searchQuery ? `Sin resultados para "${searchQuery}".` : 'No hay cursos registrados.'}
+            </p>
           )}
-        </>
-      )}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="flex items-center gap-1.5 rounded-lg border border-card-border bg-foreground/5 px-4 py-2 text-sm text-secondary hover:bg-foreground/10 disabled:opacity-40 transition-all"
+            >
+              <ChevronLeft size={16} /> Anterior
+            </button>
+            <span className="text-sm text-secondary">
+              {page} / {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="flex items-center gap-1.5 rounded-lg border border-card-border bg-foreground/5 px-4 py-2 text-sm text-secondary hover:bg-foreground/10 disabled:opacity-40 transition-all"
+            >
+              Siguiente <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
+      </>
 
       {/* Modal crear/editar curso */}
       {(modal === 'create' || modal === 'edit') && (

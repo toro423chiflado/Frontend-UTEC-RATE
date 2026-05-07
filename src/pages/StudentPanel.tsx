@@ -1,11 +1,14 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { BookOpen, MagnifyingGlass, Star, Calendar } from '@phosphor-icons/react'
+import { BookOpen, Search, Star, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cursosService, type Curso } from '../services/cursosService'
 import { myReviewService } from '../services/myReviewService'
 
 type StudentTab = 'Cursos' | 'Mis Reseñas'
-const TABS: StudentTab[] = ['Cursos', 'Mis Reseñas']
+const TABS: { label: StudentTab; icon: React.ElementType }[] = [
+  { label: 'Cursos', icon: BookOpen },
+  { label: 'Mis Reseñas', icon: Star },
+]
 const LIMIT = 12
 
 // ── Tab Cursos ────────────────────────────────────────────────────────────────
@@ -47,7 +50,7 @@ function CursosTab() {
       {/* Búsqueda */}
       <form onSubmit={handleSearch} className="flex gap-3">
         <div className="relative flex-1">
-          <MagnifyingGlass size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary" />
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary" />
           <input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -78,66 +81,75 @@ function CursosTab() {
         </div>
       )}
 
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {cursos.map((c) => (
-              <Link
-                key={c.id}
-                to={`/courses/${c.id}/professors`}
-                className="glass-card group flex flex-col justify-between rounded-2xl border border-card-border overflow-hidden hover:border-primary/30 transition-all"
-              >
-                <div className="h-1.5 w-full" style={{ backgroundColor: c.colorHex }} />
-                <div className="flex flex-col flex-1 p-5">
-                  <div
-                    className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg transition-all group-hover:scale-105"
-                    style={{ backgroundColor: `${c.colorHex}20`, color: c.colorHex }}
-                  >
-                    <BookOpen size={20} weight="duotone" />
-                  </div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/50">{c.codigo}</p>
-                  <h2 className="mt-1 text-sm font-bold text-foreground font-display line-clamp-2">{c.nombre}</h2>
-                  <p className="mt-1 text-[11px] text-secondary/60">{c.creditos} créditos</p>
-                  <div className="mt-4 pt-4 border-t border-card-border">
-                    <span className="text-[10px] font-bold text-primary group-hover:underline">
-                      Ver profesores →
-                    </span>
+      <>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {loading
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="rounded-2xl border border-card-border overflow-hidden">
+                  <div className="h-1.5 w-full bg-foreground/10 animate-pulse" />
+                  <div className="p-5 space-y-3">
+                    <div className="h-10 w-10 rounded-lg bg-foreground/10 animate-pulse" />
+                    <div className="h-3 w-16 rounded bg-foreground/10 animate-pulse" />
+                    <div className="h-4 w-36 rounded bg-foreground/10 animate-pulse" />
+                    <div className="h-3 w-20 rounded bg-foreground/10 animate-pulse" />
+                    <div className="border-t border-card-border pt-4">
+                      <div className="h-3 w-24 rounded bg-foreground/10 animate-pulse" />
+                    </div>
                   </div>
                 </div>
-              </Link>
-            ))}
-            {cursos.length === 0 && (
-              <p className="col-span-full py-16 text-center text-secondary">
-                {searchQuery ? `Sin resultados para "${searchQuery}".` : 'No hay cursos disponibles.'}
-              </p>
-            )}
-          </div>
-
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="rounded-lg border border-card-border bg-foreground/5 px-4 py-2 text-sm text-secondary hover:bg-foreground/10 disabled:opacity-40 transition-all"
-              >
-                Anterior
-              </button>
-              <span className="text-sm text-secondary">Página {page} de {totalPages}</span>
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="rounded-lg border border-card-border bg-foreground/5 px-4 py-2 text-sm text-secondary hover:bg-foreground/10 disabled:opacity-40 transition-all"
-              >
-                Siguiente
-              </button>
-            </div>
+              ))
+            : cursos.map((c) => (
+                <Link
+                  key={c.id}
+                  to={`/courses/${c.id}/professors`}
+                  className="glass-card group flex flex-col justify-between rounded-2xl border border-card-border overflow-hidden hover:border-primary/30 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  <div className="h-1.5 w-full" style={{ backgroundColor: c.colorHex }} />
+                  <div className="flex flex-col flex-1 p-5">
+                    <div
+                      className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg group-hover:scale-105 transition-transform"
+                      style={{ backgroundColor: `${c.colorHex}20`, color: c.colorHex }}
+                    >
+                      <BookOpen size={20} />
+                    </div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/50">{c.codigo}</p>
+                    <h2 className="mt-1 text-sm font-bold text-foreground font-display line-clamp-2">{c.nombre}</h2>
+                    <p className="mt-1 text-[11px] text-secondary/60">{c.creditos} créditos</p>
+                    <div className="mt-4 pt-4 border-t border-card-border">
+                      <span className="text-[10px] font-bold text-primary group-hover:underline">
+                        Ver profesores →
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+          {!loading && cursos.length === 0 && (
+            <p className="col-span-full py-16 text-center text-secondary">
+              {searchQuery ? `Sin resultados para "${searchQuery}".` : 'No hay cursos disponibles.'}
+            </p>
           )}
-        </>
-      )}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="flex items-center gap-1.5 rounded-lg border border-card-border bg-foreground/5 px-4 py-2 text-sm text-secondary hover:bg-foreground/10 disabled:opacity-40 transition-all"
+            >
+              <ChevronLeft size={16} /> Anterior
+            </button>
+            <span className="text-sm text-secondary">{page} / {totalPages}</span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="flex items-center gap-1.5 rounded-lg border border-card-border bg-foreground/5 px-4 py-2 text-sm text-secondary hover:bg-foreground/10 disabled:opacity-40 transition-all"
+            >
+              Siguiente <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
+      </>
     </div>
   )
 }
@@ -169,7 +181,7 @@ function MisResenasTab() {
                 <Star
                   key={i}
                   size={14}
-                  weight={i < r.rating ? 'fill' : 'regular'}
+                  fill={i < r.rating ? 'currentColor' : 'none'}
                   className={i < r.rating ? 'text-yellow-400' : 'text-secondary/30'}
                 />
               ))}
@@ -209,23 +221,24 @@ export default function StudentPanel() {
 
       {/* Tab bar */}
       <div className="flex gap-1 rounded-2xl border border-card-border bg-foreground/5 p-1 w-fit">
-        {TABS.map((t) => (
+        {TABS.map(({ label, icon: Icon }) => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`rounded-xl px-5 py-2.5 text-sm font-semibold transition-all ${
-              tab === t
-                ? 'bg-primary text-white shadow-md shadow-primary/20'
-                : 'text-secondary hover:text-foreground'
+            key={label}
+            onClick={() => setTab(label)}
+            className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 ${
+              tab === label
+                ? 'bg-primary text-white shadow-md shadow-primary/25 scale-[1.02]'
+                : 'text-secondary hover:text-foreground hover:bg-foreground/5'
             }`}
           >
-            {t}
+            <Icon size={15} />
+            {label}
           </button>
         ))}
       </div>
 
       {/* Contenido */}
-      {tab === 'Cursos' && <CursosTab />}
+      {tab === 'Cursos'      && <CursosTab />}
       {tab === 'Mis Reseñas' && <MisResenasTab />}
     </div>
   )
